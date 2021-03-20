@@ -1,0 +1,31 @@
+diff --git a/buildtools/makeman b/buildtools/makeman
+index c7a7031..7920388 100755
+--- a/buildtools/makeman
++++ b/buildtools/makeman
+@@ -259,7 +259,7 @@ def main(args, mainout=sys.stdout, mainerr=sys.stderr):
+         sectmap = {}
+         for file in arguments:
+             try: 
+-                infp = open(os.path.join(dirprefix, file))
++                infp = open(os.path.join(dirprefix, file),errors='surrogateescape')
+             except:
+                 sys.stderr.write("makeman: can't open %s\n" % file)
+                 continue
+@@ -290,7 +290,7 @@ def main(args, mainout=sys.stdout, mainerr=sys.stderr):
+         # Second pass: do formatting
+         for file in arguments:
+             try: 
+-                infp = open(os.path.join(dirprefix, file))
++                infp = open(os.path.join(dirprefix, file),errors='surrogateescape')
+             except:
+                 sys.stderr.write("makeman: can't open %s\n" % file)
+                 continue
+@@ -298,7 +298,7 @@ def main(args, mainout=sys.stdout, mainerr=sys.stderr):
+             infp.close()
+             tempfile = file + ".~%s-%d~" % (name, os.getpid())
+             try:
+-                outfp = open(tempfile, "w")
++                outfp = open(tempfile, "w",errors='surrogateescape')
+             except OSError:
+                 sys.stderr.write("%s: can't open tempfile" % name)
+                 return True

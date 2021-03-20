@@ -8,13 +8,15 @@ arch=('x86_64')
 license=('custom' 'BSD' 'GPL' 'LGPL')
 url="http://netpbm.sourceforge.net/"
 depends=('perl' 'libpng' 'libtiff' 'libxml2')
-makedepends=('python2' 'jbigkit' 'subversion')
+makedepends=('python' 'jbigkit' 'subversion')
 options=('!makeflags')
 # Get docs with: wget --recursive --relative -nH http://netpbm.sourceforge.net/doc/
 source=(https://downloads.sourceforge.net/project/netpbm/super_stable/$pkgver/netpbm-$pkgver.tgz
         https://sources.archlinux.org/other/packages/netpbm/netpbm-doc-31Jan2014.tar.xz{,.sig}
         netpbm-CAN-2005-2471.patch netpbm-security-code.patch netpbm-security-scripts.patch
-        reproducible-man-gzip.patch use-source-date-epoch.patch)
+        reproducible-man-gzip.patch use-source-date-epoch.patch
+        netpbm-python3-compat.patch
+        netpbm-python3-preserve-errors.patch)
 sha256sums=('e370c3593c3a2a38edd7181c1ebfc40f03dba6ade915ad46ca5d4eb46c3e381a'
             '74bcf840ee643c6917330c382484010cb99c004a3fcf05391bebcac63815acb3'
             'SKIP'
@@ -22,7 +24,9 @@ sha256sums=('e370c3593c3a2a38edd7181c1ebfc40f03dba6ade915ad46ca5d4eb46c3e381a'
             '83d75a80ce999d8b69572e54f04c4d220c60b0d09f9e52d3236264535c3bf216'
             '2c397588d9cba2c40dee55c07713d5e77e0e04245db939fdc1962d7de4cf4a33'
             '8e3efdb4fcbfdc8e9a5c8e9663c7d6b9ecef3a2379ce38d2acc5669c339f6814'
-            '68055341833f482c6910a56c2fdfe046978a1a92fd8442a2a9209c82ce3e4d13')
+            '68055341833f482c6910a56c2fdfe046978a1a92fd8442a2a9209c82ce3e4d13'
+            '54c50745ea13aab6e68eb56e66b8d37895958a2f1d175fc9adf2e0624de50cd6'
+            '990326a87f6c27eada01898fdecf73c623ab3d1a72ba2218ff98f4eb4c46d155')
 validpgpkeys=('5357F3B111688D88C1D88119FCF2CB179205AC90')
 
 prepare() {
@@ -33,8 +37,8 @@ prepare() {
   patch -p1 < ../netpbm-security-scripts.patch
   patch -p1 < ../reproducible-man-gzip.patch
   patch -p1 < ../use-source-date-epoch.patch
-  sed -i 's|#!/usr/bin/python|#!/usr/bin/python2|' buildtools/makeman
-  sed -i 's|@python|@python2|' buildtools/manpage.mk
+  patch -p1 < ../netpbm-python3-compat.patch
+  patch -p1 < ../netpbm-python3-preserve-errors.patch
 
   cp config.mk.in  config.mk
   [ "${CARCH}" = 'x86_64' ] && echo 'CFLAGS_SHLIB = -fPIC' >> config.mk

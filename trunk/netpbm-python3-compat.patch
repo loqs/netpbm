@@ -1,0 +1,68 @@
+Index: makeman
+===================================================================
+diff --git a/buildtools/makeman b/buildtools/makeman
+--- a/buildtools/makeman	(revision 2995)
++++ b/buildtools/makeman	(revision 3033)
+@@ -32,7 +32,7 @@
+ #   Added footer message to clarify original source. 
+ #
+ 
+-import os, sys, exceptions, re
++import os, sys, re
+ 
+ source = "netpbm documentation"
+ section = 1
+@@ -50,7 +50,7 @@
+ .IP
+ .B http://netpbm.sourceforge.net/doc/'''
+ 
+-class LiftException(exceptions.Exception):
++class LiftException(Exception):
+     def __init__(self, message, retval=1):
+         self.message = message
+         self.retval = retval
+@@ -332,9 +332,7 @@
+                 outdoc = makeman(name, file, indoc)
+             except:
+                 os.remove(tempfile)
+-                # Pass the exception upwards
+-                (exc_type, exc_value, exc_traceback) = sys.exc_info()
+-                raise exc_type, exc_value, exc_traceback
++                raise
+             if outdoc == indoc:
+                 os.remove(tempfile)
+             if outdoc is None:
+@@ -343,11 +341,11 @@
+                 outfp.write(outdoc)
+                 outfp.close()	# under Windows you can't rename an open file
+                 stem = file[:file.find(".")]
+-                os.rename(tempfile, stem + "." + `sectmap[file]`)
+-    except LiftException, e:
++                os.rename(tempfile, stem + "." + repr(sectmap[file]))
++    except LiftException as e:
+         mainerr.write("makeman: " + e.message + "\n")
+         return e.retval
+-    except IOError, e:
++    except IOError as e:
+         mainerr.write("makeman: file I/O error: %s\n" % e)
+         return 3
+     except KeyboardInterrupt:
+@@ -355,8 +353,7 @@
+         return 4
+     except:
+         if verbosity:
+-            (exc_type, exc_value, exc_traceback) = sys.exc_info()
+-            raise exc_type, exc_value, exc_traceback
++            raise
+         else:
+             mainerr.write("makeman: internal error!\n")
+             return 5
+@@ -363,7 +360,7 @@
+ 
+ if __name__ == "__main__":
+     # Run the main sequence
+-    raise SystemExit, main(sys.argv[1:])
++    raise SystemExit(main(sys.argv[1:]))
+ 
+ # The following sets edit modes for GNU EMACS
+ # Local Variables:
